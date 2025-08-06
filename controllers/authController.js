@@ -5,7 +5,9 @@ const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password, role } = req.body;
+    const { username, email, password } = req.body;
+    // On ignore le champ role envoyé par le client, on force à 'admin'
+    const role = 'admin';
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: "User already exists" });
 
@@ -14,7 +16,7 @@ exports.register = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      role: role || "user"
+      role
     });
 
     const token = jwt.sign(
